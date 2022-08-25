@@ -7,10 +7,11 @@ class PageContainer extends StatelessWidget {
   final List<SingleChildWidget> providers;
   AppBar? appBar;
 
-  PageContainer({required this.child, required this.providers, this.appBar});
+  PageContainer(  {required this.child, required this.providers, this.appBar,});
 
   @override
   Widget build(BuildContext context) {
+    Drawer? drawer;
     return shouldRenderPage();
   }
   Widget shouldRenderPage() {
@@ -18,6 +19,7 @@ class PageContainer extends StatelessWidget {
       return MultiProvider(
         providers: [...providers],
         child: Scaffold(
+          drawer: Drawer(),
           appBar: appBar,
           body: child,
         ),
