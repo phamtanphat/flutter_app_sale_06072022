@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:flutter_app_sale_06072022/common/bases/base_widget.dart';
 import 'package:flutter_app_sale_06072022/data/datasources/remote/api_request.dart';
 import 'package:flutter_app_sale_06072022/data/repositories/sign_in_repository.dart';
 import 'package:flutter_app_sale_06072022/presentation/features/sign_in/sign_in_bloc.dart';
 import 'package:flutter_app_sale_06072022/presentation/features/sign_in/sign_in_event.dart';
-import 'package:provider/provider.dart';
 class SignInPage extends StatefulWidget {
 
   @override
@@ -16,7 +16,7 @@ class _SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     return PageContainer(
 
-          appBar: CustomAppBar(),
+          appBar: customAppBar(),
       providers: [
         Provider(create: (context) => ApiRequest()),
         ProxyProvider<ApiRequest, SignInRepository>(
@@ -36,7 +36,7 @@ class _SignInPageState extends State<SignInPage> {
     );
   }
 String? text ;
-  AppBar CustomAppBar() {
+  AppBar customAppBar() {
 
     return AppBar(
           backgroundColor: Colors.pink.shade400,
@@ -61,7 +61,7 @@ String? text ;
 
                   decoration: BoxDecoration(
 
-                      boxShadow: [
+                      boxShadow:  [
 
                         BoxShadow(blurRadius: 7,spreadRadius: 3,
 

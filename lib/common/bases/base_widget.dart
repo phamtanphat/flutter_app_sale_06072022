@@ -6,7 +6,6 @@ class PageContainer extends StatelessWidget {
   final Widget child;
   final List<SingleChildWidget> providers;
   AppBar? appBar;
-
   PageContainer(  {required this.child, required this.providers, this.appBar,});
 
   @override
@@ -22,13 +21,13 @@ class PageContainer extends StatelessWidget {
           drawer: Drawer(),
           appBar: appBar,
           body: child,
-        ),
+       ),
       );
     } else {
-      return Scaffold(
-        appBar: appBar,
-        body: child,
-      );
+    return Scaffold(
+    appBar: appBar,
+    body: child,
+    );
     }
   }
 }
