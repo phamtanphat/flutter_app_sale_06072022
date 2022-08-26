@@ -4,7 +4,7 @@ import 'package:flutter_app_sale_06072022/data/repositories/sign_up_repository.d
 
 class SignUpBloc extends BaseBloc{
   late SignUpRepository _repository;
-  void update(SignUpRepository signUpRepository){
+  void updateRepository(SignUpRepository signUpRepository){
     _repository = signUpRepository;
   }
 

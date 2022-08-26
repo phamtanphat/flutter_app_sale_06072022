@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sale_06072022/data/datasources/remote/api_request.dart';
 import 'package:flutter_app_sale_06072022/data/repositories/sign_up_repository.dart';
-import 'package:flutter_app_sale_06072022/presentation/features/Sign_Up/sign_up_bloc.dart';
-import 'package:flutter_app_sale_06072022/presentation/features/Sign_Up/sign_up_event.dart';
+
+import 'package:flutter_app_sale_06072022/presentation/features/Sign_up/sign_up_event.dart';
+import 'package:flutter_app_sale_06072022/presentation/features/sign_up/sign_up_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_app_sale_06072022/common/bases/base_widget.dart';
 class SignUpPage extends StatefulWidget {
@@ -29,8 +30,8 @@ class _SignUpPageState extends State<SignUpPage> {
         ),
         ProxyProvider<SignUpRepository,SignUpBloc>(
             update: (context,repository,bloc){
-              bloc?.update(repository);
-              return bloc?? SignUpBloc()..update(repository);
+              bloc?.updateRepository(repository);
+              return bloc?? SignUpBloc()..updateRepository(repository);
             }
         ),
       ],
@@ -48,8 +49,8 @@ class _SignUpContainerState extends State<SignUpContainer> {
   late SignUpBloc _bloc;
   @override
   void initState() {
-    _bloc =context.read<SignUpBloc>();
-    _bloc.eventSink.add(SignUpEvent(email: 'email', password: 'password', name: 'name', phone: 'phone', address: 'address'));
+    _bloc = context.read<SignUpBloc>();
+    _bloc.eventSink.add(SignUpEvent(email: 'email', password: 'password', name: 'name', phone: 0, address: 'address'));
   }
   @override
   Widget build(BuildContext context) {

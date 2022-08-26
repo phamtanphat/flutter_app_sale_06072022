@@ -7,7 +7,7 @@ class CardRepository{
     _apiRequest =apiRequest;
   }
 
-  Future productRequest(String id, List<dynamic> products,int price){
+  Future cardRequest(String id, List<dynamic> products,int price){
     return _apiRequest.cart(id, products, price);
   }
 }

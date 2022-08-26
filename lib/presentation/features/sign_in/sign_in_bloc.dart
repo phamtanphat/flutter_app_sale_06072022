@@ -1,6 +1,5 @@
 import 'package:flutter_app_sale_06072022/common/bases/base_event.dart';
 import 'package:flutter_app_sale_06072022/data/repositories/sign_in_repository.dart';
-
 import '../../../common/bases/base_bloc.dart';
 
 class SignInBloc extends BaseBloc{
