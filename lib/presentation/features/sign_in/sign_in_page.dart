@@ -75,7 +75,7 @@ class _SignInContainerState extends State<SignInContainer> {
       showMessage(context, "Thông báo", "Bạn chưa nhập đủ thông tin");
       return;
     }
-    _bloc.eventSink.add(SignInEvent(email: email, password: password));
+    _bloc.eventSink.add(SignInEvent(email: email, password: password,));
   }
 
   @override
@@ -103,9 +103,11 @@ class _SignInContainerState extends State<SignInContainer> {
                           builder: (context, snapshot) {
                             return IgnorePointer(
                               ignoring: snapshot.data ?? false,
-                              child: _buildButtonSignIn(() {
-                                handleButtonSignIn(emailController.text, passwordController.text);
-                              }),
+                              child: _buildButtonSignIn(()
+                              {
+                                handleButtonSignIn(emailController.text, passwordController.text,);
+                              }
+                              ),
                             );
                           },
                         ),

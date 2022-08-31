@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_app_sale_06072022/common/bases/base_widget.dart';
+import 'package:flutter_app_sale_06072022/data/repositories/sign_up_repository.dart';
+import 'package:flutter_app_sale_06072022/presentation/features/Sign_Up/sign_up_bloc.dart';
+import 'package:flutter_app_sale_06072022/presentation/features/Sign_Up/sign_up_event.dart';
+import 'package:provider/provider.dart';
+import '../../../common/utils/extension.dart';
+import '../../../data/datasources/remote/api_request.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -15,7 +22,21 @@ class _SignUpPageState extends State<SignUpPage> {
       appBar: AppBar(
         title: const Text("Sign Up"),
       ),
-      providers: [],
+      providers: [
+        Provider(create: (context) => ApiRequest()),
+        ProxyProvider<ApiRequest, SignUpRepository>(
+            update: (context, request, repository) {
+          repository?.update(request);
+          return repository ?? SignUpRepository()
+            ..update(request);
+        }),
+        ProxyProvider<SignUpRepository, SignUpBloc>(
+            update: (context, repository, bloc) {
+          bloc?.updateRepository(repository);
+          return bloc ?? SignUpBloc()
+            ..updateRepository(repository);
+        }),
+      ],
       child: SignUpContainer(),
     );
   }
@@ -29,6 +50,42 @@ class SignUpContainer extends StatefulWidget {
 }
 
 class _SignUpContainerState extends State<SignUpContainer> {
+  late SignUpBloc _bloc;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    _bloc = context.read<SignUpBloc>();
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      _bloc.messageStream.listen((event) {
+        showMessage(context, "Thông báo", event);
+      });
+    });
+  }
+
+  void handleSignUpButton(
+      String email, String password, String name, String address, int phone) {
+    if (email.isEmpty ||
+        password.isEmpty ||
+        name.isEmpty ||
+        address.isEmpty) {
+      showMessage(context, "Thông báo", "Bạn chưa nhập đủ thông tin");
+      return;
+    }
+    _bloc.eventSink.add(
+      SignUpEvent(
+          email: email,
+          password: password,
+          name: name,
+          phone: phone,
+          address: address),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -44,12 +101,12 @@ class _SignUpContainerState extends State<SignUpContainer> {
                   return SingleChildScrollView(
                     child: ConstrainedBox(
                       constraints:
-                      BoxConstraints(minHeight: constraint.maxHeight),
+                          BoxConstraints(minHeight: constraint.maxHeight),
                       child: IntrinsicHeight(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            _buildDisplayTextField(),
+                            _buildNameTextFiled(),
                             SizedBox(height: 10),
                             _buildAddressTextField(),
                             SizedBox(height: 10),
@@ -59,7 +116,9 @@ class _SignUpContainerState extends State<SignUpContainer> {
                             SizedBox(height: 10),
                             _buildPasswordTextField(),
                             SizedBox(height: 10),
-                            _buildButtonSignUp()
+                            _buildButtonSignUp((){
+                              handleSignUpButton(emailController.text, passwordController.text, nameController.text, addressController.text,phoneController.text as int);
+                            }),
                           ],
                         ),
                       ),
@@ -72,11 +131,12 @@ class _SignUpContainerState extends State<SignUpContainer> {
     );
   }
 
-  Widget _buildDisplayTextField() {
+  Widget _buildNameTextFiled() {
     return Container(
       margin: EdgeInsets.only(left: 10, right: 10),
       child: TextField(
         maxLines: 1,
+        controller: nameController,
         keyboardType: TextInputType.text,
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
@@ -104,6 +164,7 @@ class _SignUpContainerState extends State<SignUpContainer> {
       margin: EdgeInsets.only(left: 10, right: 10),
       child: TextField(
         maxLines: 1,
+        controller: addressController,
         keyboardType: TextInputType.text,
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
@@ -131,6 +192,7 @@ class _SignUpContainerState extends State<SignUpContainer> {
       margin: EdgeInsets.only(left: 10, right: 10),
       child: TextField(
         maxLines: 1,
+        controller: emailController,
         keyboardType: TextInputType.text,
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
@@ -158,6 +220,7 @@ class _SignUpContainerState extends State<SignUpContainer> {
       margin: EdgeInsets.only(left: 10, right: 10),
       child: TextField(
         maxLines: 1,
+        controller: phoneController,
         keyboardType: TextInputType.phone,
         textInputAction: TextInputAction.next,
         decoration: InputDecoration(
@@ -185,6 +248,7 @@ class _SignUpContainerState extends State<SignUpContainer> {
       margin: EdgeInsets.only(left: 10, right: 10),
       child: TextField(
         maxLines: 1,
+        controller: passwordController,
         obscureText: true,
         keyboardType: TextInputType.text,
         textInputAction: TextInputAction.done,
@@ -208,28 +272,30 @@ class _SignUpContainerState extends State<SignUpContainer> {
     );
   }
 
-  Widget _buildButtonSignUp() {
+  Widget _buildButtonSignUp(Function onPress) {
     return Container(
-        margin: EdgeInsets.only(top: 20),
-        child: ElevatedButtonTheme(
-            data: ElevatedButtonThemeData(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith((states) {
-                    if (states.contains(MaterialState.pressed)) {
-                      return Colors.blue[500];
-                    } else if (states.contains(MaterialState.disabled)) {
-                      return Colors.grey;
-                    }
-                    return Colors.blueAccent;
-                  }),
-                  elevation: MaterialStateProperty.all(5),
-                  padding: MaterialStateProperty.all(
-                      EdgeInsets.symmetric(vertical: 5, horizontal: 100)),
-                )),
-            child: ElevatedButton(
-              child: Text("Register",
-                  style: TextStyle(fontSize: 18, color: Colors.white)),
-              onPressed: () {},
-            )));
+      margin: EdgeInsets.only(top: 20),
+      child: ElevatedButtonTheme(
+        data: ElevatedButtonThemeData(
+            style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.resolveWith((states) {
+            if (states.contains(MaterialState.pressed)) {
+              return Colors.blue[500];
+            } else if (states.contains(MaterialState.disabled)) {
+              return Colors.grey;
+            }
+            return Colors.blueAccent;
+          }),
+          elevation: MaterialStateProperty.all(5),
+          padding: MaterialStateProperty.all(
+              EdgeInsets.symmetric(vertical: 5, horizontal: 100)),
+        )),
+        child: ElevatedButton(
+          child: Text("Register",
+              style: TextStyle(fontSize: 18, color: Colors.white)),
+          onPressed: () => onPress(),
+        ),
+      ),
+    );
   }
 }
