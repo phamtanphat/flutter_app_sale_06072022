@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sale_06072022/common/bases/base_widget.dart';
+import 'package:flutter_app_sale_06072022/common/widgets/loading_widget.dart';
 import 'package:flutter_app_sale_06072022/data/model/product.dart';
 import 'package:flutter_app_sale_06072022/data/repositories/product_repository.dart';
 import 'package:flutter_app_sale_06072022/presentation/features/home/home_bloc.dart';
@@ -8,6 +9,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/constants/api_constant.dart';
+import '../../../common/constants/variable_constant.dart';
+import '../../../common/widgets/progress_listener_widget.dart';
 import '../../../data/datasources/remote/api_request.dart';
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -86,7 +89,20 @@ class _HomeContainerState extends State<HomeContainer> {
                         }
                     );
                   }
-              )
+              ),
+              ProgressListenerWidget<HomeBloc>(
+                callback: (event) {
+                  if (event is HomeSuccessEvent) {
+                    Navigator.pushReplacementNamed(context, VariableConstant.HOME_ROUTE);
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(event.message)));
+                  }
+                },
+                child: Container(),
+              ),
+              LoadingWidget(
+                bloc: _homeBloc,
+                child: Container(),
+              ),
             ],
           ),
         )
@@ -177,6 +193,8 @@ class _HomeContainerState extends State<HomeContainer> {
                   ),
                 ),
               ),
+
+
             ],
           ),
         ),
