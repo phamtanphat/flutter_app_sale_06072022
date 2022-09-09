@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter_app_sale_06072022/common/bases/base_bloc.dart';
 import 'package:flutter_app_sale_06072022/common/bases/base_event.dart';
+import 'package:flutter_app_sale_06072022/data/model/cart.dart';
 import 'package:flutter_app_sale_06072022/data/model/product.dart';
 import 'package:flutter_app_sale_06072022/data/repositories/product_repository.dart';
 import 'package:flutter_app_sale_06072022/presentation/features/home/home_event.dart';
@@ -11,6 +12,7 @@ import '../../../data/datasources/remote/app_response.dart';
 import '../../../data/datasources/remote/dto/product_dto.dart';
 
 class HomeBloc extends BaseBloc{
+  StreamController<Cart> cartController = StreamController();
   StreamController<List<Product>> listProductController = StreamController();
   late ProductRepository _repository;
 
@@ -23,6 +25,9 @@ class HomeBloc extends BaseBloc{
     switch(event.runtimeType) {
       case GetListProductEvent:
         _getListProduct();
+        break;
+      case GetCartEvent:
+        _getCart();
         break;
     }
   }
@@ -43,5 +48,10 @@ class HomeBloc extends BaseBloc{
     }
     loadingSink.add(false);
   }
+
+  void _getCart() {
+  }
+
+
 
 }
