@@ -25,7 +25,18 @@ class _HomePageState extends State<HomePage> {
     return PageContainer(
       appBar: AppBar(
         title: const Text("Home"),
+        leading:IconButton(icon: Icon(Icons.logout),
+    onPressed: (){
+    },
       ),
+        actions: [
+          IconButton(
+          
+            onPressed:() {}, icon: Icon(Icons.add_shopping_cart),
+          ),
+        ],
+      ),
+
       providers: [
         Provider(create: (context) => ApiRequest()),
         ProxyProvider<ApiRequest, ProductRepository>(
