@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sale_06072022/common/bases/base_widget.dart';
 import 'package:flutter_app_sale_06072022/data/model/product.dart';
@@ -22,6 +23,17 @@ class _HomePageState extends State<HomePage> {
     return PageContainer(
       appBar: AppBar(
         title: const Text("Home"),
+        leading: IconButton(
+          icon: Icon(Icons.logout),
+          onPressed: (){
+
+          },
+        ),
+        actions: [
+          IconButton(onPressed: () {
+
+          }, icon: Icon(Icons.shopping_cart))
+        ],
       ),
       providers: [
         Provider(create: (context) => ApiRequest()),
@@ -61,6 +73,7 @@ class _HomeContainerState extends State<HomeContainer> {
     _homeBloc = context.read<HomeBloc>();
     _homeBloc.eventSink.add(GetListProductEvent());
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(

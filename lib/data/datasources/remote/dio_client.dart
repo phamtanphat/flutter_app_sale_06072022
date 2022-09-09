@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_app_sale_06072022/common/constants/api_constant.dart';
+import 'package:flutter_app_sale_06072022/common/constants/variable_constant.dart';
+import 'package:flutter_app_sale_06072022/data/datasources/local/cache/app_cache.dart';
 
 class DioClient {
   Dio? _dio;
@@ -14,7 +16,17 @@ class DioClient {
   DioClient._internal() {
     if (_dio == null){
       _dio = Dio(_options);
-      _dio!.interceptors.add(LogInterceptor(requestBody: true));
+      _dio?.interceptors.add(LogInterceptor(requestBody: true));
+      _dio?.interceptors.add(InterceptorsWrapper(onRequest: (options, handler){
+        String token = AppCache.getString(VariableConstant.TOKEN);
+        if (token.isNotEmpty) {
+          dio.options.headers["Authorization"] = "Bearer $token";
+        }
+      }, onResponse: (response, handler) {
+        return handler.next(response);
+      }, onError: (e, handler){
+        return handler.next(e);
+      }));
     }
   }
 
