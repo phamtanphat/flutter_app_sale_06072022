@@ -65,6 +65,7 @@ class HomeBloc extends BaseBloc{
       );
       cartController.sink.add(cart);
     } on DioError catch (e) {
+      cartController.sink.addError(e.response?.data["message"]);
       messageSink.add(e.response?.data["message"]);
     } catch (e) {
       messageSink.add(e.toString());

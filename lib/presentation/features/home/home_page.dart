@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_sale_06072022/common/bases/base_widget.dart';
@@ -9,7 +10,9 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/constants/api_constant.dart';
+import '../../../common/widgets/loading_widget.dart';
 import '../../../data/datasources/remote/api_request.dart';
+import '../../../data/model/cart.dart';
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -30,9 +33,27 @@ class _HomePageState extends State<HomePage> {
           },
         ),
         actions: [
-          IconButton(onPressed: () {
-
-          }, icon: Icon(Icons.shopping_cart))
+          Consumer<HomeBloc>(
+            builder: (context, bloc, child){
+              return StreamBuilder<Cart>(
+                  initialData: null,
+                  stream: bloc.cartController.stream,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasError || snapshot.data == null || snapshot.data?.products.isEmpty == true) {
+                      return Container();
+                    }
+                    int count = snapshot.data?.products.length ?? 0;
+                    return Container(
+                      margin: EdgeInsets.only(right: 10, top: 10),
+                      child: Badge(
+                        badgeContent: Text(count.toString(), style: const TextStyle(color: Colors.white),),
+                        child: Icon(Icons.shopping_cart_outlined),
+                      ),
+                    );
+                  }
+              );
+            },
+          )
         ],
       ),
       providers: [
@@ -100,6 +121,10 @@ class _HomeContainerState extends State<HomeContainer> {
                         }
                     );
                   }
+              ),
+              LoadingWidget(
+                bloc: _homeBloc,
+                child: Container(),
               )
             ],
           ),
