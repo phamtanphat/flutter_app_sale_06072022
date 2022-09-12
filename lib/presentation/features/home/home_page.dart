@@ -72,6 +72,7 @@ class _HomeContainerState extends State<HomeContainer> {
     super.initState();
     _homeBloc = context.read<HomeBloc>();
     _homeBloc.eventSink.add(GetListProductEvent());
+    _homeBloc.eventSink.add(GetCartEvent());
   }
 
   @override

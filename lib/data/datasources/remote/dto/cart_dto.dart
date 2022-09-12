@@ -35,4 +35,6 @@ class CartDto {
     map['price'] = price;
     return map;
   }
+
+  static CartDto convertJson(dynamic json) => CartDto.fromJson(json);
 }
